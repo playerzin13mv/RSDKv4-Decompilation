@@ -1,0 +1,50 @@
+name: Build Sonic 1 SIR (Android APK)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ sonic1-sir ]
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Aceitar licencas do Android SDK
+        run: yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
+
+      - name: Preparar SDL2 (se faltar)
+        run: |
+          if [ ! -d android/app/jni/SDL/src ]; then
+            echo "SDL ausente em android/app/jni/SDL, baixando SDL2..."
+            git clone --depth 1 --branch release-2.30.9 https://github.com/libsdl-org/SDL.git /tmp/SDL
+            mkdir -p android/app/jni/SDL
+            cp -r /tmp/SDL/include android/app/jni/SDL/
+            cp -r /tmp/SDL/src android/app/jni/SDL/
+            cp -r /tmp/SDL/Android.mk android/app/jni/SDL/ 2>/dev/null || true
+            cp -r /tmp/SDL/android-project/app/src/main/java/org android/app/src/main/java/ 2>/dev/null || true
+          else
+            echo "SDL ja presente."
+          fi
+
+      - name: Build APK (debug)
+        working-directory: android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug --stacktrace
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Sonic1-SIR-apk
+          path: android/app/build/outputs/apk/**/*.apk
