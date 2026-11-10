@@ -1,6 +1,8 @@
 package com.decomp.rsdkv4;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -18,6 +20,7 @@ public class RSDKv4 extends SDLActivity {
     private static final String PASTA_JOGO = "Sonic1SIR";
 
     private boolean aguardandoAcesso = false;
+    private AlertDialog dialogoDados = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +60,58 @@ public class RSDKv4 extends SDLActivity {
             aguardandoAcesso = false;
             criarPastas();
             reiniciarApp();
+            return;
         }
+
+        verificarDados();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (dialogoDados != null && dialogoDados.isShowing()) {
+            dialogoDados.dismiss();
+        }
+        super.onDestroy();
+    }
+
+    private String pastaBase() {
+        return Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + PASTA_JOGO;
+    }
+
+    // Mostra o aviso se o Data.rsdk ainda nao estiver na pasta Sonic1SIR
+    private void verificarDados() {
+        if (!temAcessoArmazenamento()) {
+            return;
+        }
+        if (dialogoDados != null && dialogoDados.isShowing()) {
+            return;
+        }
+        File dados = new File(pastaBase() + "/Data.rsdk");
+        if (dados.exists()) {
+            return;
+        }
+
+        String msg = "Coloque o Data.rsdk de Sonic 1 na pasta Sonic1SIR para o jogo rodar!\n\n"
+                + "Pasta: " + pastaBase() + "/\n\n"
+                + "Put the Sonic 1 Data.rsdk file in the Sonic1SIR folder to run the game!";
+
+        AlertDialog.Builder b = new AlertDialog.Builder(this);
+        b.setTitle("Sonic 1 S.I.R");
+        b.setMessage(msg);
+        b.setCancelable(false);
+        b.setPositiveButton("Já coloquei, reiniciar", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface d, int which) {
+                reiniciarApp();
+            }
+        });
+        b.setNegativeButton("Fechar", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface d, int which) {
+                finishAffinity();
+                android.os.Process.killProcess(android.os.Process.myPid());
+            }
+        });
+        dialogoDados = b.create();
+        dialogoDados.show();
     }
 
     private boolean temAcessoArmazenamento() {
@@ -100,7 +154,7 @@ public class RSDKv4 extends SDLActivity {
         if (!temAcessoArmazenamento()) {
             return;
         }
-        String base = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + PASTA_JOGO;
+        String base = pastaBase();
         new File(base).mkdirs();
         new File(base + "/mods").mkdirs();
     }
@@ -117,7 +171,7 @@ public class RSDKv4 extends SDLActivity {
 
     // Chamado pelo motor (C++) via JNI: devolve a pasta do jogo
     public String getBasePath() {
-        String p = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + PASTA_JOGO;
+        String p = pastaBase();
         if (temAcessoArmazenamento()) {
             new File(p).mkdirs();
             new File(p + "/mods").mkdirs();
