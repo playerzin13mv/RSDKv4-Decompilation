@@ -37,6 +37,12 @@ void MenuControl_Create(void *objPtr)
         self->buttonCount++;
     }
 
+#if RETRO_USE_MOD_LOADER
+    self->buttons[self->buttonCount]     = (NativeEntity_AchievementsButton *)CREATE_ENTITY(ModsButton);
+    self->buttonFlags[self->buttonCount] = BUTTON_MODS;
+    self->buttonCount++;
+#endif
+
     self->buttons[self->buttonCount]     = (NativeEntity_AchievementsButton *)CREATE_ENTITY(OptionsButton);
     self->buttonFlags[self->buttonCount] = BUTTON_OPTIONS;
     self->buttonCount++;
@@ -399,6 +405,17 @@ void MenuControl_Main(void *objPtr)
                         }
                         button->labelPtr->state = TEXTLABEL_STATE_IDLE;
                         break;
+
+#if RETRO_USE_MOD_LOADER
+                    case BUTTON_MODS:
+                        self->state                  = MENUCONTROL_STATE_ENTERSUBMENU;
+                        self->autoButtonMoveVelocity = 0.0;
+                        button->g                    = 0xFF;
+                        button->labelPtr->state      = TEXTLABEL_STATE_NONE;
+                        self->backButton->visible    = true;
+                        CREATE_ENTITY(ModsMenu);
+                        break;
+#endif
 
                     case BUTTON_OPTIONS:
                         self->state                  = MENUCONTROL_STATE_ENTERSUBMENU;
