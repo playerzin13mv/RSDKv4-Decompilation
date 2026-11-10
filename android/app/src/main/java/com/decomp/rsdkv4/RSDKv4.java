@@ -8,7 +8,7 @@ import org.libsdl.app.*;
 
 public class RSDKv4 extends SDLActivity {
 
-    private static final String PASTA_JOGO = "Sonic1SIR";
+    private static final String PASTA_JOGO = "SonicCollectionLauncher/Sonic1";
 
     // Pausa/retoma a thread nativa quando nao ha multi-janela
     @Override
