@@ -14,7 +14,7 @@ android {
     compileSdkVersion 29
     defaultConfig {
         if (buildAsApplication) {
-            applicationId "com.sir.sonic1"
+            applicationId "com.vacationchaos.game"
         }
         minSdkVersion 23
         targetSdkVersion 29

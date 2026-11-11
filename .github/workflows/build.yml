@@ -1,6 +1,7 @@
 name: Build RSDKv4
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - android/**
@@ -11,6 +12,7 @@ on:
       - CMakeLists.txt
     branches:
       - main
+      - vacation-chaos
 
 env:
   GENERAL_FLAGS: "-DRETRO_DISABLE_PLUS=ON -DCMAKE_BUILD_TYPE=Release"

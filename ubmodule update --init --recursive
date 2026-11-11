@@ -1,0 +1,30 @@
+[33mcommit e1fa869a007a672efff488f4f6e0f3ed7dd935c1[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: playerzin13mv <playerzinourico@gmail.com>
+Date:   Mon Nov 9 14:01:16 2026 -0300
+
+    S.I.R: rename app
+
+ alpha     | 0
+ angle     | 0
+ b         | 0
+ fontID    | 0
+ g         | 0
+ labelPtr  | 0
+ labelPtr- | 0
+ r         | 0
+ scale     | 0
+ state     | 0
+ x         | 0
+ y         | 0
+ z         | 0
+ 13 files changed, 0 insertions(+), 0 deletions(-)
+
+[33mcommit e5f25279bb86dd9e31da53eebd35efc9e9550692[m
+Author: playerzin13mv <playerzinourico@gmail.com>
+Date:   Mon Nov 9 13:59:27 2026 -0300
+
+    S.I.R: rename app
+
+ android/app/build.gradle                    | 2 [32m+[m[31m-[m
+ android/app/src/main/res/values/strings.xml | 2 [32m+[m[31m-[m
+ 2 files changed, 2 insertions(+), 2 deletions(-)
